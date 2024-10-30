@@ -3,14 +3,12 @@ from typing import List
 from core.dependencies import get_current_user
 from core.security import JWTBearer
 from core.services.character_service import CharacterService
-from core.models.character import Character
 from core.models.user import User
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 from container import Container
 from core.schema.base_schema import Blank
-from core.schema.character_schema import PostCharacter, UpdateCharacter
-
+from core.schema.character_schema import PostCharacter, UpdateCharacter, Character
 
 router = APIRouter(
     prefix="/character",

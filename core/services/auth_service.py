@@ -43,9 +43,9 @@ class AuthService:
         }
         return response
 
-    def sign_up(self, sign_up: SignUp):
-        user = User(**sign_up.dict(exclude_none=True))
-        user.password = get_password_hash(sign_up.password)
+    def sign_up(self, user: SignUp):
+        # user = User(**sign_up.dict(exclude_none=True))
+        user.password = get_password_hash(user.password)
         created = self.repository.create(user)
         return created
 

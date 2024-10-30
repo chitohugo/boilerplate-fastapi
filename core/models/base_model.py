@@ -1,9 +1,12 @@
-from datetime import datetime
+from sqlalchemy import Column, Integer, DateTime, func
 
-from sqlmodel import Field, func, SQLModel
+from db.database import Base
 
 
-class BaseModel(SQLModel):
-    id: int = Field(default=None, primary_key=True, index=True, nullable=False)
-    created_at: datetime = Field(default=func.now())
-    updated_at: datetime = Field(default=func.now())
+class BaseModel(Base):
+    __abstract__ = True
+
+    id = Column(Integer, primary_key=True, index=True, nullable=False, autoincrement=True)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
+

@@ -2,7 +2,7 @@ from contextlib import AbstractContextManager, contextmanager
 from typing import Any, Callable
 
 from sqlalchemy import create_engine, orm
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from sqlalchemy.ext.declarative import as_declarative, declared_attr, declarative_base
 from sqlalchemy.orm import Session
 
 
@@ -41,3 +41,5 @@ class Database:
             raise
         finally:
             session.close()
+
+Base = declarative_base()

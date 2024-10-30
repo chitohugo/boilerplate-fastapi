@@ -106,3 +106,4 @@ env/envvars
 # VS Code files for those working on multiple tools
 .vscode
 .venv/
+.env

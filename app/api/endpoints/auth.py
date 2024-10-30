@@ -1,5 +1,5 @@
+from core.schema.user_schema import User
 from core.services.auth_service import AuthService
-from core.models.user import User
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 from container import Container
