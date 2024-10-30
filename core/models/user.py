@@ -1,12 +1,14 @@
+from sqlalchemy import Column, String
+
 from core.models.base_model import BaseModel
-from sqlmodel import Field
 
 
-class User(BaseModel, table=True):
+class User(BaseModel):
     __tablename__ = "users"
 
-    email: str = Field(unique=True)
-    username: str = Field(unique=True)
-    first_name: str = Field(default=None, nullable=True)
-    last_name: str = Field(default=None, nullable=True)
-    password: str = Field()
+    email = Column(String, unique=True, nullable=False)
+    username = Column(String, unique=True, nullable=False)
+    first_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=True)
+    password = Column(String, nullable=False)
+

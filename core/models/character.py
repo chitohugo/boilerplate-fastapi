@@ -1,17 +1,18 @@
-from typing import Optional
+from sqlalchemy import Column, Integer, Float, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 from core.models.base_model import BaseModel
-from sqlmodel import Field
 
 
-class Character(BaseModel, table=True):
+class Character(BaseModel):
     __tablename__ = "characters"
 
-    name: str = Field(unique=True, nullable=False)
-    height: float = Field(nullable=False)
-    mass: float = Field(nullable=False)
-    hair_color: str = Field(nullable=False)
-    skin_color: str = Field(nullable=False)
-    eye_color: str = Field(nullable=False)
+    name = Column(String, unique=True, nullable=False)
+    height = Column(Float, nullable=False)
+    mass = Column(Float, nullable=False)
+    hair_color = Column(String, nullable=False)
+    skin_color = Column(String, nullable=False)
+    eye_color = Column(String, nullable=False)
 
-    user_id: Optional[int] = Field(default=None, foreign_key="users.id")
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    user = relationship("User", backref="characters")
