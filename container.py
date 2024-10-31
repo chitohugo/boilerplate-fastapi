@@ -1,4 +1,4 @@
-from config import Configs
+from config import settings
 from core.repository.user_repository import UserRepository
 from core.services.auth_service import AuthService
 from core.services.character_service import CharacterService
@@ -7,7 +7,6 @@ from core.repository.character_repository import CharacterRepository
 from dependency_injector import containers, providers
 from db.database import Database
 
-config = Configs()
 
 class Container(containers.DeclarativeContainer):
     # config = providers.Configuration(pydantic_settings=[Configs()])
@@ -15,13 +14,13 @@ class Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
             "app.api.endpoints.auth",
-            "app.api.endpoints.user",
-            "app.api.endpoints.character",
+            "app.api.endpoints.users",
+            "app.api.endpoints.characters",
             "core.dependencies"
         ]
     )
 
-    db = providers.Singleton(Database, db_url=config.database_url)
+    db = providers.Singleton(Database, db_url=settings.database_url)
 
     user_repository = providers.Factory(UserRepository, session_factory=db.provided.session)
     character_repository = providers.Factory(CharacterRepository, session_factory=db.provided.session)

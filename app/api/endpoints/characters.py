@@ -11,8 +11,8 @@ from core.schema.base_schema import Blank
 from core.schema.character_schema import PostCharacter, UpdateCharacter, Character
 
 router = APIRouter(
-    prefix="/character",
-    tags=["character"],
+    prefix="/characters",
+    tags=["characters"],
     dependencies=[Depends(JWTBearer())]
 )
 

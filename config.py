@@ -5,17 +5,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-ENV: str = ""
 
-
-class Configs:
-    # BASE
+class BaseConfig:
+    """Base configuration settings."""
     env: str = os.getenv("ENV", "dev")
     api: str = "/api"
     prefix: str = "/api/v1"
     project_name: str = "BoilerPlate"
 
-    # DATE
     datetime_format: str = "%Y-%m-%dT%H:%M:%S"
     date_format: str = "%Y-%m-%d"
 
@@ -25,7 +22,6 @@ class Configs:
     secret_key: str = os.getenv("SECRET_KEY")
     access_token_expire: int = 60 * 24 * 30  # 60 minutes * 24 hours * 30 days = 30 days
 
-    # CORS
     backend_cors_origins: List[str] = ["*"]
 
     # DATABASE
@@ -38,9 +34,18 @@ class Configs:
     database_url: str = f"{engine}://{user}:{password}@{host}:{port}/{database_name}"
 
 
+class TestConfig(BaseConfig):
+    """Test configuration settings."""
+    env: str = "test"
+    sqlite_file_name = "character.db"
+    database_url: str = f"sqlite:///{sqlite_file_name}"
 
-class TestConfigs(Configs):
-    ENV: str = "test"
+
+def get_settings() -> BaseConfig:
+    env = os.getenv("ENV", "dev")
+    if env == "test":
+        return TestConfig()
+    return BaseConfig()
 
 
-configs = Configs()
+settings = get_settings()

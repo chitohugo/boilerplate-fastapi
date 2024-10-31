@@ -14,6 +14,7 @@ class BaseRepository:
     def read_by_field(self, field_name, value):
         with self.session_factory() as session:
             query = session.query(self.model)
+            print(session.connection().engine)
             query = query.filter(getattr(self.model, field_name) == value).first()
             if not query:
                 raise NotFoundError(message=f"Not found {field_name} : {value}")

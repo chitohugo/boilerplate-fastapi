@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from core.exceptions import AuthError
 from fastapi import Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from config import configs
+from config import settings
 from jose import jwt
 from passlib.context import CryptContext
 
@@ -15,10 +15,10 @@ def create_access_token(subject: dict, expires_delta: timedelta = None) -> (str,
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=configs.access_token_expire)
+        expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire)
     payload = {"exp": expire, **subject}
-    encoded_jwt = jwt.encode(payload, configs.secret_key, algorithm=ALGORITHM)
-    expiration_datetime = expire.strftime(configs.datetime_format)
+    encoded_jwt = jwt.encode(payload, settings.secret_key, algorithm=ALGORITHM)
+    expiration_datetime = expire.strftime(settings.datetime_format)
     return encoded_jwt, expiration_datetime
 
 
@@ -32,7 +32,7 @@ def get_password_hash(password: str) -> str:
 
 def decode_jwt(token: str) -> dict:
     try:
-        decoded_token = jwt.decode(token, configs.secret_key, algorithms=ALGORITHM)
+        decoded_token = jwt.decode(token, settings.secret_key, algorithms=ALGORITHM)
         return decoded_token if decoded_token["exp"] >= int(round(datetime.utcnow().timestamp())) else None
     except Exception:
         return {}
