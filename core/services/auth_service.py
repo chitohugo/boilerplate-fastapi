@@ -4,7 +4,7 @@ from core.exceptions import AuthError
 from core.models.user import User
 from core.security import create_access_token, get_password_hash, verify_password
 from core.repository.user_repository import UserRepository
-from config import configs
+from config import settings
 from core.schema.auth_schema import Payload, SignIn, SignUp
 
 
@@ -23,6 +23,7 @@ class AuthService:
 
     def remove_by_id(self, id):
         return self.repository.delete_by_id(id)
+
     def sign_in(self, sign_in: SignIn):
         user: User = self.repository.read_by_field("email", sign_in.email)
         if not user:
@@ -36,7 +37,7 @@ class AuthService:
             email=user.email,
             first_name=user.first_name
         )
-        token_lifespan = timedelta(minutes=configs.access_token_expire)
+        token_lifespan = timedelta(minutes=settings.access_token_expire)
         access_token, expiration_datetime = create_access_token(payload.dict(), token_lifespan)
         response = {
             "access_token": access_token

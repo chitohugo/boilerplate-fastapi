@@ -1,6 +1,6 @@
 from app.api.routes import routers as v1_routers
 from fastapi import FastAPI
-from config import configs
+from config import settings
 from container import Container
 from starlette.middleware.cors import CORSMiddleware
 
@@ -11,8 +11,8 @@ class AppCreator:
     def __init__(self):
         # set app default
         self.app = FastAPI(
-            title=configs.project_name,
-            openapi_url=f"{configs.api}/openapi.json",
+            title=settings.project_name,
+            openapi_url=f"{settings.api}/openapi.json",
             version="0.0.1",
         )
 
@@ -22,10 +22,10 @@ class AppCreator:
         # self.db.create_database()
 
         # set cors
-        if configs.backend_cors_origins:
+        if settings.backend_cors_origins:
             self.app.add_middleware(
                 CORSMiddleware,
-                allow_origins=[str(origin) for origin in configs.backend_cors_origins],
+                allow_origins=[str(origin) for origin in settings.backend_cors_origins],
                 allow_credentials=True,
                 allow_methods=["*"],
                 allow_headers=["*"],
@@ -34,9 +34,9 @@ class AppCreator:
         # set routes
         @self.app.get("/")
         def status():
-            return f"API: {configs.project_name} is working"
+            return f"API: {settings.project_name} is working"
 
-        self.app.include_router(v1_routers, prefix=configs.prefix)
+        self.app.include_router(v1_routers, prefix=settings.prefix)
 
     def __new__(cls):
         if cls._instance is None:

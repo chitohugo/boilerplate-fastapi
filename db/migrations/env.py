@@ -7,7 +7,7 @@ from core.models.user import User
 from core.models.character import Character
 from sqlmodel import SQLModel
 
-from config import configs
+from config import settings
 from db.database import Base
 
 # this is the Alembic Config object, which provides
@@ -16,7 +16,7 @@ config = context.config
 
 config.set_main_option(
     "sqlalchemy.url",
-    configs.database_url
+    settings.database_url
 )
 
 # Interpret the config file for Python logging.

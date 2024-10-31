@@ -12,8 +12,8 @@ from core.schema.user_schema import User
 
 
 router = APIRouter(
-    prefix="/user",
-    tags=["user"],
+    prefix="/users",
+    tags=["users"],
     dependencies=[Depends(JWTBearer())]
 )
 

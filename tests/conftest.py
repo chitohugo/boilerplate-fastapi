@@ -1,87 +1,72 @@
-import os
-
 from core.models.user import User
-
-os.environ["ENV"] = "test"
+from db.database import Base
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from sqlmodel import SQLModel
+from sqlalchemy.orm import Session, sessionmaker
 
 from core.security import get_password_hash
-from config import configs
-from container import Container
-from main import AppCreator
-from core.schema.auth_schema import SignIn
+from config import settings
+from main import AppCreator, container
 
 
-@pytest.fixture(scope="session")
-def engine():
-    return create_engine(configs.DATABASE_URL)
+@pytest.fixture(scope="function")
+def session():
+    engine = create_engine(settings.database_url)
+    Base.metadata.create_all(engine)
 
+    session = Session(bind=engine)
 
-@pytest.fixture(scope="session")
-def tables(engine):
-    SQLModel.metadata.create_all(engine)
     try:
-        yield
+        yield session
     finally:
-        SQLModel.metadata.drop_all(engine)
-
-
-@pytest.fixture
-def session(engine, tables):
-    connection = engine.connect()
-    session = Session(bind=connection)
-
-    yield session
-
-    session.rollback()
-    connection.close()
-
+        session.rollback()
+        session.close()
+        # Base.metadata.drop_all(engine)
 
 @pytest.fixture
 def client(session):
     app_creator = AppCreator()
     app = app_creator.app
+
     with TestClient(app) as client:
         yield client
 
-
 @pytest.fixture
 def create_user(session):
-    data_user = {
+    data = {
         "email": "julian.clark@gmail.com",
         "username": "delicatesilk",
         "first_name": "Julian",
         "last_name": "Clark",
         "password": get_password_hash('dolor')
     }
-    instance = User(**data_user)
+    instance = User(**data)
     session.add(instance)
     session.commit()
     yield instance
 
 
 @pytest.fixture
-def container():
-    return Container()
+def auth_token(client):
+    auth_data = {
+        "email": "julian.clark@gmail.com",
+        "password": "dolor"
+    }
+    response = client.post("/api/v1/auth/sign-in", json=auth_data)
+    assert response.status_code == 200
+    token = response.json().get("access_token")
+
+    return token
 
 
 @pytest.fixture
-def token(client, container):
-    sign_in = SignIn(
-        email="julian.clark@gmail.com",
-        password="dolor"
-    )
+def req(session, auth_token):
+    headers = {"Authorization": f"Bearer {auth_token}"}
+    app_creator = AppCreator()
+    app = app_creator.app
 
-    service = container.auth_service
-    response = service().sign_in(sign_in)
-    yield response['access_token']
-
-
-@pytest.fixture
-def test_name(request):
-    return request.node.name
+    with TestClient(app) as client:
+        client.headers.update(headers)
+        yield client

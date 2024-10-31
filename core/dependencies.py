@@ -4,7 +4,7 @@ from core.services.user_service import UserService
 from core.models.user import User
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
-from config import configs
+from config import settings
 from container import Container
 from core.schema.auth_schema import Payload
 from jose import jwt
@@ -17,7 +17,7 @@ def get_current_user(
         service: UserService = Depends(Provide[Container.user_service]),
 ) -> User:
     try:
-        payload = jwt.decode(token, configs.secret_key, algorithms=ALGORITHM)
+        payload = jwt.decode(token, settings.secret_key, algorithms=ALGORITHM)
         token_data = Payload(**payload)
     except (jwt.JWTError, ValidationError):
         raise AuthError(message="Could not validate credentials")
