@@ -1,6 +1,4 @@
 [flake8]
-application_import_names = wallet
-application-package-names = nwcommons, nw_api_sdk
 import-order-style = appnexus
 exclude = tests, migrations
 ignore = D100, D104, D107, W503, W504
