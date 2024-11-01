@@ -32,28 +32,3 @@ jobs:
 
       - name: Run tests
         run: pytest -vv
-
-      - name: Log in to Heroku Container Registry
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          echo "$HEROKU_API_KEY" | docker login --username=_ --password-stdin registry.heroku.com
-
-      - name: Build Docker image
-        run: |
-          docker build -t registry.heroku.com/boilerplate-fastapi .
-
-      - name: Push Docker image to Heroku
-        if: success()
-        run: |
-          docker push registry.heroku.com/boilerplate-fastapi
-
-  release:
-    needs: build-and-test  # Solo ejecuta el despliegue si build-and-test fue exitoso
-    runs-on: ubuntu-latest
-    steps:
-      - name: Release the app
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          heroku container:release web -a boilerplate-fastapi

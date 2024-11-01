@@ -28,7 +28,7 @@ class BaseRepository:
     def create(self, schema):
         with self.session_factory() as session:
             try:
-                query = self.model(**schema.dict(), id=None)
+                query = self.model(**schema.model_dump(), id=None)
                 session.add(query)
                 session.commit()
                 session.refresh(query)
@@ -37,7 +37,7 @@ class BaseRepository:
             return query
     def update(self, id: int, schema):
         with self.session_factory() as session:
-            session.query(self.model).filter(self.model.id == id).update(schema.dict(exclude_none=True))
+            session.query(self.model).filter(self.model.id == id).update(schema.model_dump(exclude_none=True))
             session.commit()
             return self.read_by_field("id", id)
 

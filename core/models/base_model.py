@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, DateTime, func
 
-from db.database import Base
+from db.database import BaseModel
 
 
-class BaseModel(Base):
+class Base(BaseModel):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, index=True, nullable=False, autoincrement=True)
