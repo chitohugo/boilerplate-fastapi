@@ -38,7 +38,7 @@ class AuthService:
             first_name=user.first_name
         )
         token_lifespan = timedelta(minutes=settings.access_token_expire)
-        access_token, expiration_datetime = create_access_token(payload.dict(), token_lifespan)
+        access_token, expiration_datetime = create_access_token(payload.model_dump(), token_lifespan)
         response = {
             "access_token": access_token
         }

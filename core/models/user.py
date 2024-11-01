@@ -1,9 +1,9 @@
 from sqlalchemy import Column, String
 
-from core.models.base_model import BaseModel
+from core.models.base_model import Base
 
 
-class User(BaseModel):
+class User(Base):
     __tablename__ = "users"
 
     email = Column(String, unique=True, nullable=False)

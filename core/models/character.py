@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, Float, String, ForeignKey
 from sqlalchemy.orm import relationship
 
-from core.models.base_model import BaseModel
+from core.models.base_model import Base
 
 
-class Character(BaseModel):
+class Character(Base):
     __tablename__ = "characters"
 
     name = Column(String, unique=True, nullable=False)

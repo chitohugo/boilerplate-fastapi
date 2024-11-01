@@ -1,20 +1,24 @@
+import os
+
+os.environ["ENV"] = "test"
+
 from core.models.user import User
-from db.database import Base
+from db.database import BaseModel
 
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
 from config import settings
-from main import AppCreator, container
+from main import AppCreator
 
 
 @pytest.fixture(scope="function")
 def session():
     engine = create_engine(settings.database_url)
-    Base.metadata.create_all(engine)
+    BaseModel.metadata.create_all(engine)
 
     session = Session(bind=engine)
 
@@ -23,7 +27,7 @@ def session():
     finally:
         session.rollback()
         session.close()
-        # Base.metadata.drop_all(engine)
+        BaseModel.metadata.drop_all(engine)
 
 @pytest.fixture
 def client(session):
